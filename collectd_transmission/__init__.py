@@ -14,9 +14,9 @@ def config(config):
 def initialize():
     USERNAME = data['username']
     PASSWORD = data['password']
-    HOST = data.get('hostname', 'http://localhost:9091/transmission/rpc')
+    ADDRESS = data.get('address', 'http://localhost:9091/transmission/rpc')
     TIMEOUT = int(data.get('timeout', '5'))
-    c = Client(address=HOST, user=USERNAME, password=PASSWORD, timeout=TIMEOUT)
+    c = Client(address=ADDRESS, user=USERNAME, password=PASSWORD, timeout=TIMEOUT)
     data['client'] = c
 
 def shutdown():
@@ -25,13 +25,15 @@ def shutdown():
 
 def get_stats():
     stats=data['client'].session_stats()
-    gauges = ['activeTorrentCount', 'torrentCount', 'downloadSpeed', 'uploadSpeed', 'pausedTorrentCount', 'blocklist_size' ]
+    gauges = ['activeTorrentCount', 'torrentCount', 'downloadSpeed',
+            'uploadSpeed', 'pausedTorrentCount', 'blocklist_size',
+            'secondsActive', ]
     for gauge in gauges:
         vl = collectd.Values(type='gauge',
                              plugin='transmission',
                              type_instance=gauge)
         vl.dispatch(values=[stats.fields[gauge]])
-    counters = [ 'downloadedBytes', 'filesAdded', 'uploadedBytes', 'secondsActive', ]
+    counters = [ 'downloadedBytes', 'filesAdded', 'uploadedBytes', ]
     for counter in counters:
         vl = collectd.Values(type='counter',
                              plugin='transmission',

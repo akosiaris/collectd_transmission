@@ -14,10 +14,10 @@ installed, collectd will be querying transmission for the following:
 * pausedTorrentCount
 * torrentCount
 
-and creating the relevant RRD files (or pushing to graphite or you have
-collectd doing)
+and creating the relevant RRD files (or pushing to graphite or whatever
+you have collectd doing)
 
-# How to use #
+# How to install #
 I assume a Debian system here, amend accordingly for your system
 
 If you have not already installed transmision, install it:
@@ -36,20 +36,25 @@ Install collectd.
 
     apt-get install collectd
 
-Clone the repo, copy the .py, do whatever you want so that the .py file
-ends up somewhere in your fileystem
+## Use the python package ##
 
+    pip install collectd_transmission
+
+## Do it manually ##
+Clone the repo, copy the module directory somewhere in your fileystem
+
+# Configure #
 Insert the following in your collectd.conf
 
     <Plugin python>
-        ModulePath "/path/to/module/dir"
+        ModulePath "/path/to/module/dir" # Not needed if installed via pip or package
         LogTraces false
         Interactive false
-        Import "transmission_stats"
-        <Module transmission_stats>
+        Import "collectd_transmission"
+        <Module collectd_transmission>
             username "myuser" # Required
             password "mypass" # Required
-            hostname "http://localhost:9091/transmission/rpc" # Optional, default to what we got here
+            address "http://localhost:9091/transmission/rpc" # Optional, defaults to "http://localhost:9091/transmission/rpc"
             timeout "5" # Optional, defaults to 5
         </Module>
     </Plugin>
