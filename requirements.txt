@@ -1,0 +1,2 @@
+pbr
+transmissionrpc>=0.8
