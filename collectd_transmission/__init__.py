@@ -17,7 +17,7 @@ metrics = {
     'downloadedBytes': { 'type': 'counter', 'cumulative': True },
     'filesAdded': { 'type': 'counter', 'cumulative': True },
     'uploadedBytes': { 'type': 'counter', 'cumulative': True },
-    'secondsActive': { 'type': 'counter', 'cumulative': True },
+    'secondsActive': { 'type': 'gauge', 'cumulative': True },
 }
 
 def config(config):
