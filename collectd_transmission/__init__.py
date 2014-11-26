@@ -6,7 +6,19 @@ import collectd
 import transmissionrpc
 from distutils.version import StrictVersion
 
-data={}
+data = {}
+metrics = {
+    'activeTorrentCount': { 'type': 'gauge', 'cumulative': False },
+    'torrentCount': { 'type': 'gauge', 'cumulative': False },
+    'downloadSpeed': { 'type': 'gauge', 'cumulative': False },
+    'uploadSpeed': { 'type': 'gauge', 'cumulative': False },
+    'pausedTorrentCount': { 'type': 'gauge', 'cumulative': False },
+    'blocklist_size': { 'type': 'gauge', 'cumulative': False },
+    'downloadedBytes': { 'type': 'counter', 'cumulative': True },
+    'filesAdded': { 'type': 'counter', 'cumulative': True },
+    'uploadedBytes': { 'type': 'counter', 'cumulative': True },
+    'secondsActive': { 'type': 'counter', 'cumulative': True },
+}
 
 def config(config):
     for child in config.children:
@@ -41,19 +53,11 @@ def field_getter(stats, key, cumulative=False):
 def get_stats():
     stats=data['client'].session_stats()
     # And let's fetch our data
-    gauges = ['activeTorrentCount', 'torrentCount', 'downloadSpeed',
-            'uploadSpeed', 'pausedTorrentCount', 'blocklist_size', ]
-    for gauge in gauges:
-        vl = collectd.Values(type='gauge',
+    for metric, attrs in metrics.items():
+        vl = collectd.Values(type=attrs['type'],
                              plugin='transmission',
-                             type_instance=gauge)
-        vl.dispatch(values=[field_getter(stats, gauge)])
-    counters = [ 'downloadedBytes', 'filesAdded', 'uploadedBytes', 'secondsActive', ]
-    for counter in counters:
-        vl = collectd.Values(type='counter',
-                             plugin='transmission',
-                             type_instance=counter)
-        vl.dispatch(values=[field_getter(stats, counter, True)])
+                             type_instance=metric)
+        vl.dispatch(values=[field_getter(stats, metric, attrs['cumulative'])])
 
 collectd.register_config(config)
 collectd.register_init(initialize)
