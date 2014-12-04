@@ -1,4 +1,5 @@
-# Introduction #
+Introduction
+============
 
 A python plugin for integrating collectd and transmission. With this
 installed, collectd will be querying transmission for the following:
@@ -17,10 +18,35 @@ installed, collectd will be querying transmission for the following:
 and creating the relevant RRD files (or pushing to graphite or whatever
 you have collectd doing)
 
-# How to install #
+Compatibility
+=============
+Developed and tested on Debian Wheezy system.
+
+That means:
+- collectd 5.1
+- transmissionrpc 0.8
+
+But testing has also been conducted on Debian Jessie systems. Which means:
+- collectd 5.4
+- transmissionrpc 0.11
+
+It is expected Debian Jessie will be the main playground soon
+
+Feel free to submit PRs for other systems support
+
+How to install
+==============
+
+Prerequisites
+-------------
+
+Those are collectd and transmission
+
 I assume a Debian system here, amend accordingly for your system
 
 If you have not already installed transmision, install it:
+
+.. code-block:: bash
 
     apt-get install transmission-daemon
 
@@ -30,21 +56,37 @@ installation but this has not been tested.
 
 Install the python transmission binding
 
+.. code-block:: bash
+
     apt-get install python-transmissionrpc
 
 Install collectd.
 
+.. code-block:: bash
+
     apt-get install collectd
 
-## Use the python package ##
+Install collectd_transmission
+-----------------------------
+
+There are two ways to achieve this for now
+
+Use the python package
+++++++++++++++++++++++
+
+.. code-block:: bash
 
     pip install collectd_transmission
 
-## Do it manually ##
+Do it manually
+++++++++++++++
+
 Clone the repo, copy the module directory somewhere in your fileystem
 
-# Configure #
-Insert the following in your collectd.conf
+Configure
+=========
+
+Insert the following in your collectd.conf::
 
     <Plugin python>
         ModulePath "/path/to/module/dir" # Not needed if installed via pip or package
@@ -61,18 +103,18 @@ Insert the following in your collectd.conf
 
 modified accordingly to your needs. Restart collectd and you are done.
 
+.. code-block:: bash
+
     sudo service collectd restart
 
 There should be rrds for transmission under collectd's data directory.
 Most probably that is /var/lib/collectd/rrd/_hostname_/transmission/
 
-## How to display your data ##
+How to display your data
+========================
 
 Well if you got collectd, you probably already have a way of displaying
 your data anyway. If you don't there are various frontends available at:
 
 [https://collectd.org/wiki/index.php/List\_of\_front-ends](https://collectd.org/wiki/index.php/List\_of\_front-ends)
 
-# Compatibility #
-
-Developed and tested on Debian Wheezy system. Feel free to submit PRs for other systems support
