@@ -6,18 +6,35 @@ import collectd
 import transmissionrpc
 from distutils.version import StrictVersion
 
+PLUGIN_NAME = 'transmission'
+
 data = {}
 metrics = {
-    'activeTorrentCount': { 'type': 'gauge', 'cumulative': False },
-    'torrentCount': { 'type': 'gauge', 'cumulative': False },
-    'downloadSpeed': { 'type': 'gauge', 'cumulative': False },
-    'uploadSpeed': { 'type': 'gauge', 'cumulative': False },
-    'pausedTorrentCount': { 'type': 'gauge', 'cumulative': False },
-    'blocklist_size': { 'type': 'gauge', 'cumulative': False },
-    'downloadedBytes': { 'type': 'counter', 'cumulative': True },
-    'filesAdded': { 'type': 'counter', 'cumulative': True },
-    'uploadedBytes': { 'type': 'counter', 'cumulative': True },
-    'secondsActive': { 'type': 'gauge', 'cumulative': True },
+    'general': {
+    # General metrics
+        'activeTorrentCount': { 'type': 'gauge'},
+        'torrentCount': { 'type': 'gauge'},
+        'downloadSpeed': { 'type': 'gauge'},
+        'uploadSpeed': { 'type': 'gauge'},
+        'pausedTorrentCount': { 'type': 'gauge'},
+        'blocklist_size': { 'type': 'gauge'},
+    },
+    # All time metrics
+    'cumulative': {
+        'downloadedBytes': { 'type': 'counter'},
+        'filesAdded': { 'type': 'counter'},
+        'uploadedBytes': { 'type': 'counter'},
+        'secondsActive': { 'type': 'gauge'},
+        'sessionCount': { 'type': 'gauge'},
+    },
+    # Per session (restart) metrics
+    'current': {
+        'downloadedBytes': { 'type': 'counter'},
+        'filesAdded': { 'type': 'counter'},
+        'uploadedBytes': { 'type': 'counter'},
+        'secondsActive': { 'type': 'gauge'},
+        'sessionCount': { 'type': 'gauge'},
+    }
 }
 
 def config(config):
@@ -37,27 +54,36 @@ def shutdown():
     # Not really any resource to close, just clear the object
     data['client'] = None
 
-def field_getter(stats, key, cumulative=False):
+def field_getter(stats, key, category):
     # 0.9 and onwards have statistics in a different field
     if StrictVersion(data['client_version']) >= StrictVersion('0.9') :
-        if cumulative:
+        if category == 'cumulative':
             return stats.cumulative_stats[key]
-        else:
+        elif category == 'current':
+            return stats.current_stats[key]
+        elif category == 'general':
             return stats.key
-    else:
-        if cumulative:
-            return stats.fields['cumulative_stats'][key]
         else:
+            return 0
+    else:
+        if category == 'cumulative':
+            return stats.fields['cumulative_stats'][key]
+        elif category == 'current':
+            return stats.fields['current_stats'][key]
+        elif category == 'general':
             return stats.fields[key]
+        else:
+            return 0
 
 def get_stats():
     stats=data['client'].session_stats()
     # And let's fetch our data
-    for metric, attrs in metrics.items():
-        vl = collectd.Values(type=attrs['type'],
-                             plugin='transmission',
-                             type_instance=metric)
-        vl.dispatch(values=[field_getter(stats, metric, attrs['cumulative'])])
+    for category, catmetrics in metrics.items():
+        for metric, attrs in catmetris.items():
+            vl = collectd.Values(type=attrs['type'],
+                                 plugin=PLUGIN_NAME,
+                                 type_instance='%s-%s' % (category,metric))
+            vl.dispatch(values=[field_getter(stats, metric, category)])
 
 collectd.register_config(config)
 collectd.register_init(initialize)
