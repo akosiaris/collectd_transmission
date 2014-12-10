@@ -79,10 +79,10 @@ def get_stats():
     stats=data['client'].session_stats()
     # And let's fetch our data
     for category, catmetrics in metrics.items():
-        for metric, attrs in catmetris.items():
+        for metric, attrs in catmetrics.items():
             vl = collectd.Values(type=attrs['type'],
                                  plugin=PLUGIN_NAME,
-                                 type_instance='%s-%s' % (category,metric))
+                                 type_instance='%s-%s' % (category, metric))
             vl.dispatch(values=[field_getter(stats, metric, category)])
 
 collectd.register_config(config)
