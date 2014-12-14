@@ -2,8 +2,16 @@
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
-import collectd
-import transmissionrpc
+'''
+..  moduleauthor:: Alexandros Kosiaris
+'''
+
+try:
+    import collectd
+    import transmissionrpc
+    successimport = True
+except ImportError:
+    successimport = False
 from distutils.version import StrictVersion
 
 PLUGIN_NAME = 'transmission'
@@ -38,10 +46,24 @@ metrics = {
 }
 
 def config(config):
+    '''
+    Read the configuration and store it at a shared variable
+
+    Retrieve the configuration from the config variable passed by collectd to
+    the python module
+
+    Args:
+        config: The config instance passed by collectd to the module
+    Returns:
+        Nothing
+    '''
     for child in config.children:
         data[child.key] = child.values[0]
 
 def initialize():
+    '''
+    Collectd initialization routine
+    '''
     USERNAME = data['username']
     PASSWORD = data['password']
     ADDRESS = data.get('address', 'http://localhost:9091/transmission/rpc')
@@ -51,10 +73,25 @@ def initialize():
     data['client_version'] = transmissionrpc.__version__
 
 def shutdown():
+    '''
+    Collectd shutdown routive
+    '''
     # Not really any resource to close, just clear the object
     data['client'] = None
 
 def field_getter(stats, key, category):
+    '''
+    Get the statistics associated with a key and category
+
+    Args:
+        stats (dict): A dictionary containing the statistics
+        key (str): A string to denote the name of the metric
+        category (str): The category this metric belongs in. Possible values:
+        'cumulative', 'current', 'general'
+
+    Returns:
+        int. The metric value or 0
+    '''
     # 0.9 and onwards have statistics in a different field
     if StrictVersion(data['client_version']) >= StrictVersion('0.9') :
         if category == 'cumulative':
@@ -76,6 +113,9 @@ def field_getter(stats, key, category):
             return 0
 
 def get_stats():
+    '''
+    Collectd routine to actually get and dispatch the statistics
+    '''
     stats=data['client'].session_stats()
     # And let's fetch our data
     for category, catmetrics in metrics.items():
@@ -85,7 +125,8 @@ def get_stats():
                                  type_instance='%s-%s' % (category, metric))
             vl.dispatch(values=[field_getter(stats, metric, category)])
 
-collectd.register_config(config)
-collectd.register_init(initialize)
-collectd.register_read(get_stats)
-collectd.register_shutdown(shutdown)
+if successimport:
+    collectd.register_config(config)
+    collectd.register_init(initialize)
+    collectd.register_read(get_stats)
+    collectd.register_shutdown(shutdown)
