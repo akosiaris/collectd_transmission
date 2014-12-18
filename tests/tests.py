@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
+import mock
 import sys
 
 sys.path.append('..')
@@ -32,9 +33,26 @@ class MethodTestCase(unittest.TestCase):
     def test_config(self):
         collectd_transmission.config(self.config)
 
-    def test_initialize(self):
+    @mock.patch('collectd_transmission.transmissionrpc.Client')
+    def test_initialize(self, mock_Client):
         collectd_transmission.config(self.config)
         collectd_transmission.initialize()
+        mock_Client.assert_called_with(
+                address='http://localhost:9091/transmission/rpc',
+                user='myusername',
+                password='mypassword',
+                timeout=5)
+
+    def test_shutdown(self):
+        collectd_transmission.shutdown()
+
+    @mock.patch('collectd_transmission.transmissionrpc.Client')
+    def test_get_stats(self, mock_Client):
+        collectd_transmission.collectd = mock.MagicMock()
+        collectd_transmission.config(self.config)
+        collectd_transmission.initialize()
+        collectd_transmission.get_stats()
+        mock_Client.session_status.assert_called()
 
 if __name__ == '__main__':
     unittest.main()

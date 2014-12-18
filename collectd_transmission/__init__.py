@@ -120,7 +120,7 @@ def get_stats():
     '''
     Collectd routine to actually get and dispatch the statistics
     '''
-    stats=data['client'].session_stats()
+    stats = data['client'].session_stats()
     # And let's fetch our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
