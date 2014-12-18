@@ -6,12 +6,16 @@
 ..  moduleauthor:: Alexandros Kosiaris
 '''
 
+# The collectd module is injected on the fly in the namespace by
+# collectd. Depending on it to exist while testing is impossible
 try:
     import collectd
-    import transmissionrpc
     successimport = True
 except ImportError:
     successimport = False
+
+# These on the other hand are expected to be there
+import transmissionrpc
 from distutils.version import StrictVersion
 
 PLUGIN_NAME = 'transmission'
