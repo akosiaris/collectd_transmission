@@ -8,10 +8,12 @@ sys.path.append('..')
 
 import collectd_transmission
 
+
 # A Monkey object to make our lives easier. We want to avoid including
 # collectd module which is why all the fuss
 class MonkeyObject(object):
     pass
+
 
 class MethodTestCase(unittest.TestCase):
     def setUp(self):
@@ -28,7 +30,7 @@ class MethodTestCase(unittest.TestCase):
         self.config.children.append(child2)
 
     def tearDown(self):
-        del self.config # The rest will be handled by GC
+        del self.config  # The rest will be handled by GC
 
     def test_config(self):
         collectd_transmission.config(self.config)
@@ -38,10 +40,10 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.config(self.config)
         collectd_transmission.initialize()
         mock_Client.assert_called_with(
-                address='http://localhost:9091/transmission/rpc',
-                user='myusername',
-                password='mypassword',
-                timeout=5)
+            address='http://localhost:9091/transmission/rpc',
+            user='myusername',
+            password='mypassword',
+            timeout=5)
 
     def test_shutdown(self):
         collectd_transmission.shutdown()

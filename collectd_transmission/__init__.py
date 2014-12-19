@@ -22,32 +22,33 @@ PLUGIN_NAME = 'transmission'
 
 data = {}
 metrics = {
-    'general': {
     # General metrics
-        'activeTorrentCount': { 'type': 'gauge'},
-        'torrentCount': { 'type': 'gauge'},
-        'downloadSpeed': { 'type': 'gauge'},
-        'uploadSpeed': { 'type': 'gauge'},
-        'pausedTorrentCount': { 'type': 'gauge'},
-        'blocklist_size': { 'type': 'gauge'},
+    'general': {
+        'activeTorrentCount': {'type': 'gauge'},
+        'torrentCount': {'type': 'gauge'},
+        'downloadSpeed': {'type': 'gauge'},
+        'uploadSpeed': {'type': 'gauge'},
+        'pausedTorrentCount': {'type': 'gauge'},
+        'blocklist_size': {'type': 'gauge'},
     },
     # All time metrics
     'cumulative': {
-        'downloadedBytes': { 'type': 'counter'},
-        'filesAdded': { 'type': 'counter'},
-        'uploadedBytes': { 'type': 'counter'},
-        'secondsActive': { 'type': 'gauge'},
-        'sessionCount': { 'type': 'gauge'},
+        'downloadedBytes': {'type': 'counter'},
+        'filesAdded': {'type': 'counter'},
+        'uploadedBytes': {'type': 'counter'},
+        'secondsActive': {'type': 'gauge'},
+        'sessionCount': {'type': 'gauge'},
     },
     # Per session (restart) metrics
     'current': {
-        'downloadedBytes': { 'type': 'counter'},
-        'filesAdded': { 'type': 'counter'},
-        'uploadedBytes': { 'type': 'counter'},
-        'secondsActive': { 'type': 'gauge'},
-        'sessionCount': { 'type': 'gauge'},
+        'downloadedBytes': {'type': 'counter'},
+        'filesAdded': {'type': 'counter'},
+        'uploadedBytes': {'type': 'counter'},
+        'secondsActive': {'type': 'gauge'},
+        'sessionCount': {'type': 'gauge'},
     }
 }
+
 
 def config(config):
     '''
@@ -64,6 +65,7 @@ def config(config):
     for child in config.children:
         data[child.key] = child.values[0]
 
+
 def initialize():
     '''
     Collectd initialization routine
@@ -76,12 +78,14 @@ def initialize():
     data['client'] = c
     data['client_version'] = transmissionrpc.__version__
 
+
 def shutdown():
     '''
     Collectd shutdown routive
     '''
     # Not really any resource to close, just clear the object
     data['client'] = None
+
 
 def field_getter(stats, key, category):
     '''
@@ -97,7 +101,7 @@ def field_getter(stats, key, category):
         int. The metric value or 0
     '''
     # 0.9 and onwards have statistics in a different field
-    if StrictVersion(data['client_version']) >= StrictVersion('0.9') :
+    if StrictVersion(data['client_version']) >= StrictVersion('0.9'):
         if category == 'cumulative':
             return stats.cumulative_stats[key]
         elif category == 'current':
@@ -115,6 +119,7 @@ def field_getter(stats, key, category):
             return stats.fields[key]
         else:
             return 0
+
 
 def get_stats():
     '''
