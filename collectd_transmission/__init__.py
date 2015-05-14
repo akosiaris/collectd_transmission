@@ -107,7 +107,7 @@ def field_getter(stats, key, category):
         elif category == 'current':
             return stats.current_stats[key]
         elif category == 'general':
-            return stats.key
+            return getattr(stats, key)
         else:
             return 0
     else:
