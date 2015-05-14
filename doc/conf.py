@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'collectd_transmission'
-copyright = u'2014, Alexandros Kosiaris'
+copyright = u'2015, Alexandros Kosiaris'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -248,7 +248,7 @@ texinfo_documents = [
 epub_title = u'collectd_transmission'
 epub_author = u'Alexandros Kosiaris'
 epub_publisher = u'Alexandros Kosiaris'
-epub_copyright = u'2014, Alexandros Kosiaris'
+epub_copyright = u'2015, Alexandros Kosiaris'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
