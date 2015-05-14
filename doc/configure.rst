@@ -22,5 +22,5 @@ modified accordingly to your needs. Restart collectd and you are done.
 
     sudo service collectd restart
 
-There should be rrds for transmission under collectd's data directory.
+There should be RRDs for transmission under collectd's data directory.
 Most probably that is /var/lib/collectd/rrd/<hostname>/transmission/
