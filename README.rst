@@ -1,6 +1,10 @@
 Introduction
 ============
 
+.. image:: https://travis-ci.org/akosiaris/collectd_transmission.svg?branch=master
+    :target: https://travis-ci.org/akosiaris/collectd_transmission
+        :alt: Build Status
+
 A python plugin for integrating collectd and transmission. With this
 installed, collectd will be querying transmission for the following:
 
