@@ -54,7 +54,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.config(self.config)
         collectd_transmission.initialize()
         collectd_transmission.get_stats()
-        mock_Client.session_status.assert_called()
+        mock_Client.session_status.assert_called_with()
 
 if __name__ == '__main__':
     unittest.main()
