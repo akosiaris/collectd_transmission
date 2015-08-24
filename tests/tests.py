@@ -53,6 +53,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.collectd = mock.MagicMock()
         collectd_transmission.config(self.config)
         collectd_transmission.initialize()
+        collectd_transmission.data['client'] = mock_Client
         collectd_transmission.get_stats()
         mock_Client.session_stats.assert_called_with()
 
