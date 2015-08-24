@@ -25,4 +25,4 @@ you have collectd doing)
 
 Some of these metrics are per session, some session cumulative, some are
 session independent. Their type 'current', 'cumulative', 'general' is set
-in the name of the metric
+in the name of the metric and the name of the metric is mostly self explanatory
