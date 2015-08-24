@@ -5,6 +5,10 @@ Introduction
     :target: https://travis-ci.org/akosiaris/collectd_transmission
         :alt: Build Status
 
+.. image:: https://readthedocs.org/projects/collectd-transmission/?badge=latest
+    :target: https://readthedocs.org/projects/collectd-transmission/?badge=latest
+    :alt: Documentation Status
+
 A python plugin for integrating collectd and transmission. With this
 installed, collectd will be querying transmission for the following:
 
