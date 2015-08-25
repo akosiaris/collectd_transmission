@@ -5,7 +5,7 @@ Introduction
     :target: https://travis-ci.org/akosiaris/collectd_transmission
         :alt: Build Status
 
-.. image:: https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat
+.. image:: https://readthedocs.org/projects/collectd-transmission/?badge=latest
     :target: https://readthedocs.org/projects/collectd-transmission/?badge=latest
     :alt: Documentation Status
 
