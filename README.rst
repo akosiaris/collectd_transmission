@@ -6,7 +6,7 @@ Introduction
         :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/collectd-transmission/badge/?version=latest
-    :target: https://readthedocs.org/projects/collectd-transmission/?badge=latest
+    :target: https://readthedocs.org/projects/collectd-transmission/
     :alt: Documentation Status
 
 A python plugin for integrating collectd and transmission. With this
