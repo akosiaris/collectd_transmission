@@ -2,3 +2,4 @@ flake8
 sphinx
 coverage
 mock
+coveralls
