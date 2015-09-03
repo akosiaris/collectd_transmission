@@ -106,19 +106,15 @@ def field_getter(stats, key, category):
             return stats.cumulative_stats[key]
         elif category == 'current':
             return stats.current_stats[key]
-        elif category == 'general':
+        else:  # We are in "general"
             return getattr(stats, key)
-        else:
-            return 0
     else:
         if category == 'cumulative':
             return stats.fields['cumulative_stats'][key]
         elif category == 'current':
             return stats.fields['current_stats'][key]
-        elif category == 'general':
+        else:  # We are in "general"
             return stats.fields[key]
-        else:
-            return 0
 
 
 def get_stats():
