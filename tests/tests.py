@@ -4,6 +4,10 @@ import unittest
 import mock
 import sys
 
+# Monkey patching the collectd module to facilitate testing
+mock_collectd = mock.MagicMock()
+sys.modules['collectd'] = mock_collectd
+
 # This is a hack to force tests to use the in-repo version of the module and not
 # the one installed by tox
 sys.path.insert(0, '.')
