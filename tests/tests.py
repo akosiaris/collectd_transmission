@@ -4,26 +4,25 @@ import unittest
 import mock
 import sys
 
+# Monkey patching the collectd module to facilitate testing
+mock_collectd = mock.MagicMock()
+sys.modules['collectd'] = mock_collectd
+
 # This is a hack to force tests to use the in-repo version of the module and not
 # the one installed by tox
 sys.path.insert(0, '.')
 import collectd_transmission
 
 
-# A Monkey object to make our lives easier. We want to avoid including
-# collectd module which is why all the fuss
-class MonkeyObject(object):
-    pass
-
-
 class MethodTestCase(unittest.TestCase):
     def setUp(self):
-        self.config = MonkeyObject()
+        # Mock our configuration to enable testing
+        self.config = mock.Mock()
         self.config.children = []
-        child1 = MonkeyObject()
+        child1 = mock.Mock()
         child1.key = 'username'
         child1.values = ['myusername']
-        child2 = MonkeyObject()
+        child2 = mock.Mock()
         child2.key = 'password'
         child2.values = ['mypassword']
 

@@ -6,15 +6,7 @@
 ..  moduleauthor:: Alexandros Kosiaris
 '''
 
-# The collectd module is injected on the fly in the namespace by
-# collectd. Depending on it to exist while testing is impossible
-try:
-    import collectd
-    successimport = True
-except ImportError:
-    successimport = False
-
-# These on the other hand are expected to be there
+import collectd
 import transmissionrpc
 from distutils.version import StrictVersion
 
@@ -130,8 +122,8 @@ def get_stats():
                                  type_instance='%s-%s' % (category, metric))
             vl.dispatch(values=[field_getter(stats, metric, category)])
 
-if successimport:
-    collectd.register_config(config)
-    collectd.register_init(initialize)
-    collectd.register_read(get_stats)
-    collectd.register_shutdown(shutdown)
+# Register our functions
+collectd.register_config(config)
+collectd.register_init(initialize)
+collectd.register_read(get_stats)
+collectd.register_shutdown(shutdown)
