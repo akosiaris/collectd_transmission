@@ -13,6 +13,10 @@ Introduction
    :target: https://coveralls.io/github/akosiaris/collectd_transmission?branch=master
    :alt: Code Coverage Status
 
+.. image:: https://img.shields.io/pypi/v/collectd_transmission.svg
+   :target: https://pypi.python.org/pypi/collectd_transmission
+   :alt: PyPi version
+
 A python plugin for integrating collectd and transmission. With this
 installed, collectd will be querying transmission for the following:
 
