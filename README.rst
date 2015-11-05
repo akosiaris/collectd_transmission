@@ -1,6 +1,14 @@
 Introduction
 ============
 
+.. image:: https://img.shields.io/pypi/v/collectd_transmission.svg
+   :target: https://pypi.python.org/pypi/collectd_transmission
+   :alt: PyPi version
+
+.. image:: https://img.shields.io/pypi/dm/collectd_transmission.svg
+   :target: https://pypi.python.org/pypi/collectd_transmission
+      :alt: PyPI Monthly downloads
+
 .. image:: https://travis-ci.org/akosiaris/collectd_transmission.svg?branch=master
     :target: https://travis-ci.org/akosiaris/collectd_transmission
         :alt: Build Status
@@ -12,10 +20,6 @@ Introduction
 .. image:: https://coveralls.io/repos/akosiaris/collectd_transmission/badge.svg?branch=master&service=github
    :target: https://coveralls.io/github/akosiaris/collectd_transmission?branch=master
    :alt: Code Coverage Status
-
-.. image:: https://img.shields.io/pypi/v/collectd_transmission.svg
-   :target: https://pypi.python.org/pypi/collectd_transmission
-   :alt: PyPi version
 
 A python plugin for integrating collectd and transmission. With this
 installed, collectd will be querying transmission for the following:
