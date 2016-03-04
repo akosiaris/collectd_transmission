@@ -7,15 +7,15 @@ Introduction
 
 .. image:: https://img.shields.io/pypi/dm/collectd_transmission.svg
    :target: https://pypi.python.org/pypi/collectd_transmission
-      :alt: PyPI Monthly downloads
+   :alt: PyPI Monthly downloads
 
 .. image:: https://travis-ci.org/akosiaris/collectd_transmission.svg?branch=master
-    :target: https://travis-ci.org/akosiaris/collectd_transmission
-        :alt: Build Status
+   :target: https://travis-ci.org/akosiaris/collectd_transmission
+   :alt: Build Status
 
 .. image:: https://readthedocs.org/projects/collectd-transmission/badge/?version=latest
-    :target: https://readthedocs.org/projects/collectd-transmission/
-    :alt: Documentation Status
+   :target: https://readthedocs.org/projects/collectd-transmission/
+   :alt: Documentation Status
 
 .. image:: https://coveralls.io/repos/akosiaris/collectd_transmission/badge.svg?branch=master&service=github
    :target: https://coveralls.io/github/akosiaris/collectd_transmission?branch=master
