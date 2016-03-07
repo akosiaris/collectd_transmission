@@ -113,8 +113,14 @@ def get_stats():
     '''
     Collectd routine to actually get and dispatch the statistics
     '''
-    stats = data['client'].session_stats()
     # And let's fetch our data
+    try:
+        stats = data['client'].session_stats()
+    except transmissionrpc.error.TransmissionError:
+        shutdown()
+        initialize()
+        return  # On this run, just fail to return anything
+    # Let's get our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
             vl = collectd.Values(type=attrs['type'],
