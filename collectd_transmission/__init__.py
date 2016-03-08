@@ -116,6 +116,11 @@ def get_stats():
     '''
     Collectd routine to actually get and dispatch the statistics
     '''
+    # If we are not correctly initialized, initialize us once more.
+    # Something happened after the first init and we have lost state
+    if 'client' not in data or data['client'] is None:
+        shutdown()
+        initialize()
     # And let's fetch our data
     try:
         stats = data['client'].session_stats()

@@ -74,6 +74,11 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.get_stats()
         mock_Client.session_stats.assert_called_with()
 
+    @mock.patch('collectd_transmission.transmissionrpc.Client')
+    def test_get_stats_none_client(self, mock_Client):
+        collectd_transmission.data['client'] = None
+        collectd_transmission.get_stats()
+
 
 if __name__ == '__main__':
     unittest.main()
