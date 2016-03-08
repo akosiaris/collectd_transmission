@@ -17,7 +17,7 @@ Introduction
    :target: https://readthedocs.org/projects/collectd-transmission/
    :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/akosiaris/collectd_transmission/badge.svg?branch=master&service=github
+.. image:: https://coveralls.io/repos/github/akosiaris/collectd_transmission/badge.svg?branch=master
    :target: https://coveralls.io/github/akosiaris/collectd_transmission?branch=master
    :alt: Code Coverage Status
 
