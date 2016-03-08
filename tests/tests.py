@@ -48,6 +48,10 @@ class MethodTestCase(unittest.TestCase):
     def test_shutdown(self):
         collectd_transmission.shutdown()
 
+    def test_incorrect_shutdown(self):
+        del collectd_transmission.data['client']
+        collectd_transmission.shutdown()
+
     @mock.patch('collectd_transmission.transmissionrpc.Client')
     def test_get_stats(self, mock_Client):
         collectd_transmission.collectd = mock.MagicMock()
