@@ -51,9 +51,6 @@ class MethodTestCase(unittest.TestCase):
 
     @mock.patch('collectd_transmission.transmissionrpc.Client')
     def test_get_stats(self, mock_Client):
-        collectd_transmission.collectd = mock.MagicMock()
-        collectd_transmission.config(self.config)
-        collectd_transmission.initialize()
         collectd_transmission.data['client'] = mock_Client
         collectd_transmission.get_stats()
         mock_Client.session_stats.assert_called_with()
@@ -62,9 +59,6 @@ class MethodTestCase(unittest.TestCase):
     def test_get_stats_transmissionError_exception(self, mock_Client):
         mock_Client.session_stats = mock.MagicMock(
             side_effect=TransmissionError('foo'))
-        collectd_transmission.collectd = mock.MagicMock()
-        collectd_transmission.config(self.config)
-        collectd_transmission.initialize()
         collectd_transmission.data['client'] = mock_Client
         collectd_transmission.get_stats()
         mock_Client.session_stats.assert_called_with()
