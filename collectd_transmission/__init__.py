@@ -68,7 +68,6 @@ def initialize():
     TIMEOUT = int(data.get('timeout', '5'))
     c = transmissionrpc.Client(address=ADDRESS, user=USERNAME, password=PASSWORD, timeout=TIMEOUT)
     data['client'] = c
-    data['client_version'] = transmissionrpc.__version__
 
 
 def shutdown():
@@ -93,7 +92,8 @@ def field_getter(stats, key, category):
         int. The metric value or 0
     '''
     # 0.9 and onwards have statistics in a different field
-    if StrictVersion(data['client_version']) >= StrictVersion('0.9'):
+    client_version = transmissionrpc.__version__
+    if StrictVersion(client_version) >= StrictVersion('0.9'):
         if category == 'cumulative':
             return stats.cumulative_stats[key]
         elif category == 'current':
