@@ -46,6 +46,17 @@ class MethodTestCase(unittest.TestCase):
             password='mypassword',
             timeout=5)
 
+    @mock.patch('collectd_transmission.transmissionrpc.Client',
+            side_effect=TransmissionError)
+    def test_initialize_fail(self, mock_Client):
+        collectd_transmission.config(self.config)
+        collectd_transmission.initialize()
+        mock_Client.assert_called_with(
+            address='http://localhost:9091/transmission/rpc',
+            user='myusername',
+            password='mypassword',
+            timeout=5)
+
     def test_shutdown(self):
         collectd_transmission.shutdown()
 
