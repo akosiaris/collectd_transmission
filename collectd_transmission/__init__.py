@@ -136,6 +136,7 @@ def get_stats():
                                  type_instance='%s-%s' % (category, metric))
             vl.dispatch(values=[field_getter(stats, metric, category)])
 
+
 # Register our functions
 collectd.register_config(config)
 collectd.register_init(initialize)
