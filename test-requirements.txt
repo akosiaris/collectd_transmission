@@ -1,5 +1,5 @@
 flake8
-sphinx<1.7
+sphinx
 coverage
 mock
 coveralls
