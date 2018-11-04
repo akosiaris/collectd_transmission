@@ -5,10 +5,6 @@ Introduction
    :target: https://pypi.python.org/pypi/collectd_transmission
    :alt: PyPi version
 
-.. image:: https://img.shields.io/pypi/dm/collectd_transmission.svg
-   :target: https://pypi.python.org/pypi/collectd_transmission
-   :alt: PyPI Monthly downloads
-
 .. image:: https://travis-ci.org/akosiaris/collectd_transmission.svg?branch=master
    :target: https://travis-ci.org/akosiaris/collectd_transmission
    :alt: Build Status
