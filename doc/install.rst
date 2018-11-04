@@ -18,11 +18,17 @@ The above install the daemon cause a headless box is assumed. It should
 probably work with a non headless box as well and a normal transmission
 installation but this has not been tested.
 
-Install the python transmission binding
+Install the python transmission binding via either the system packages
 
 .. code-block:: bash
 
     apt-get install python-transmissionrpc
+
+or plain pip
+
+.. code-block:: bash
+
+    pip install transmissionrpc
 
 Install collectd.
 
