@@ -104,12 +104,7 @@ def field_getter(stats, key, category):
         else:  # We are in "general"
             return getattr(stats, key)
     else:
-        if category == 'cumulative':
-            return stats.fields['cumulative_stats'][key]
-        elif category == 'current':
-            return stats.fields['current_stats'][key]
-        else:  # We are in "general"
-            return stats.fields[key]
+        raise RuntimeError('transmissionrpc version < 0.9 found, not supported')
 
 
 def get_stats():

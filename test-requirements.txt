@@ -1,3 +1,4 @@
+transmissionrpc>=0.9
 flake8
 sphinx
 coverage

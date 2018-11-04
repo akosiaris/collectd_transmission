@@ -2,7 +2,7 @@ language: python
 matrix:
   include:
     - python: 2.7
-      env: TOXENV=py27-transmissionrpc_lt_09,py27-transmissionrpc_ge_09,flake8,doc,coverage
+      env: TOXENV=py27,flake8,doc,coverage
     - python: 3.4
       env: TOXENV=py34
     - python: 3.5
