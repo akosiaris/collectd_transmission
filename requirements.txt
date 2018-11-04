@@ -1,1 +1,1 @@
-transmissionrpc>=0.8
+transmissionrpc>=0.9

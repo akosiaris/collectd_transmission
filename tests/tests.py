@@ -67,6 +67,15 @@ class MethodTestCase(unittest.TestCase):
         mock_Client.session_stats.assert_called_with()
 
     @mock.patch('collectd_transmission.transmissionrpc.Client')
+    def test_get_stats_wrong_transmissionrpc_version(self, mock_Client):
+        collectd_transmission.data['client'] = mock_Client
+        collectd_transmission.transmissionrpc.__version__ = '0.8'
+        try:
+            collectd_transmission.get_stats()
+        except RuntimeError:
+            return True
+
+    @mock.patch('collectd_transmission.transmissionrpc.Client')
     def test_get_stats_transmissionError_exception(self, mock_Client):
         mock_Client.session_stats = mock.MagicMock(
             side_effect=TransmissionError('foo'))
