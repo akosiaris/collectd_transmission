@@ -61,8 +61,9 @@ class MethodTestCase(unittest.TestCase):
             password='mypassword',
             timeout=5)
 
-    @mock.patch('collectd_transmission.transmissionrpc.Client',
-            side_effect=TransmissionError)
+    @mock.patch(
+        'collectd_transmission.transmissionrpc.Client',
+        side_effect=TransmissionError)
     def test_initialize_fail(self, mock_Client):
         '''
         Test a failed init
