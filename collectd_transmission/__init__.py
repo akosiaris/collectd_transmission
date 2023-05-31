@@ -132,7 +132,7 @@ def get_stats():
             values = collectd.Values(
                 type=attrs['type'],
                 plugin=PLUGIN_NAME,
-                type_instance='%s-%s' % (category, metric))
+                type_instance=f'{category}-{metric}')
             values.dispatch(values=[field_getter(stats, metric, category)])
 
 
