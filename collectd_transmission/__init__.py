@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
@@ -68,10 +68,10 @@ def initialize():
     timeout = int(data.get('timeout', '5'))
     try:
         client = transmissionrpc.Client(
-                address=address,
-                user=username,
-                password=password,
-                timeout=timeout)
+            address=address,
+            user=username,
+            password=password,
+            timeout=timeout)
     except transmissionrpc.error.TransmissionError:
         client = None
     data['client'] = client
@@ -129,9 +129,10 @@ def get_stats():
     # Let's get our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
-            values = collectd.Values(type=attrs['type'],
-                                 plugin=PLUGIN_NAME,
-                                 type_instance='%s-%s' % (category, metric))
+            values = collectd.Values(
+                type=attrs['type'],
+                plugin=PLUGIN_NAME,
+                type_instance='%s-%s' % (category, metric))
             values.dispatch(values=[field_getter(stats, metric, category)])
 
 
