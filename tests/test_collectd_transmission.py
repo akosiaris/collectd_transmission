@@ -15,7 +15,7 @@ sys.modules['collectd'] = mock_collectd
 # This is a hack to force tests to use the in-repo version of the module and not
 # the one installed by tox
 sys.path.insert(0, '.')
-import collectd_transmission
+import collectd_transmission  # pylint: disable=wrong-import-position
 
 
 class MethodTestCase(unittest.TestCase):
