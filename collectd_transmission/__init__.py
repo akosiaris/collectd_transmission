@@ -6,7 +6,7 @@
 ..  moduleauthor:: Alexandros Kosiaris
 '''
 
-from distutils.version import StrictVersion
+from packaging.version import Version, parse
 import collectd  # pylint: disable=import-error
 import transmissionrpc  # pylint: disable=import-error
 
@@ -101,7 +101,7 @@ def field_getter(stats, key, category):
     '''
     # 0.9 and onwards have statistics in a different field
     client_version = transmissionrpc.__version__
-    if StrictVersion(client_version) <= StrictVersion('0.9'):
+    if parse(client_version) <= Version('0.9'):
         raise RuntimeError('transmissionrpc version < 0.9 found, not supported')
     if category == 'cumulative':
         return stats.cumulative_stats[key]
