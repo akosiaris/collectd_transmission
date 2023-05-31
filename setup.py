@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
+'''
+A very very very old setup.py. Deprecated and probably will be removed
+'''
+
 #
 # Simply trigger Python Build Reasonableness
 # https://pypi.python.org/pypi/pbr
