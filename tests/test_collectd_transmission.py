@@ -108,7 +108,7 @@ class MethodTestCase(unittest.TestCase):
             pass
 
     @mock.patch('collectd_transmission.transmissionrpc.Client')
-    def test_get_stats_transmissionError_exception(self, mock_client):
+    def test_get_stats_exception(self, mock_client):
         '''
         Test getting stats with an exception
         '''
