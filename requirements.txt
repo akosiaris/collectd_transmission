@@ -1,1 +1,2 @@
 transmissionrpc>=0.9
+packaging
