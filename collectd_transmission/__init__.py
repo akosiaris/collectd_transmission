@@ -6,9 +6,9 @@
 ..  moduleauthor:: Alexandros Kosiaris
 '''
 
+from distutils.version import StrictVersion
 import collectd
 import transmissionrpc
-from distutils.version import StrictVersion
 
 PLUGIN_NAME = 'transmission'
 
@@ -42,7 +42,7 @@ metrics = {
 }
 
 
-def config(config):
+def configuration(config):
     '''
     Read the configuration and store it at a shared variable
 
@@ -62,15 +62,19 @@ def initialize():
     '''
     Collectd initialization routine
     '''
-    USERNAME = data['username']
-    PASSWORD = data['password']
-    ADDRESS = data.get('address', 'http://localhost:9091/transmission/rpc')
-    TIMEOUT = int(data.get('timeout', '5'))
+    username = data['username']
+    password = data['password']
+    address = data.get('address', 'http://localhost:9091/transmission/rpc')
+    timeout = int(data.get('timeout', '5'))
     try:
-        c = transmissionrpc.Client(address=ADDRESS, user=USERNAME, password=PASSWORD, timeout=TIMEOUT)
+        client = transmissionrpc.Client(
+                address=address,
+                user=username,
+                password=password,
+                timeout=timeout)
     except transmissionrpc.error.TransmissionError:
-        c = None
-    data['client'] = c
+        client = None
+    data['client'] = client
 
 
 def shutdown():
@@ -96,15 +100,14 @@ def field_getter(stats, key, category):
     '''
     # 0.9 and onwards have statistics in a different field
     client_version = transmissionrpc.__version__
-    if StrictVersion(client_version) >= StrictVersion('0.9'):
-        if category == 'cumulative':
-            return stats.cumulative_stats[key]
-        elif category == 'current':
-            return stats.current_stats[key]
-        else:  # We are in "general"
-            return getattr(stats, key)
-    else:
+    if StrictVersion(client_version) <= StrictVersion('0.9'):
         raise RuntimeError('transmissionrpc version < 0.9 found, not supported')
+    if category == 'cumulative':
+        return stats.cumulative_stats[key]
+    if category == 'current':
+        return stats.current_stats[key]
+    # We are in "general"
+    return getattr(stats, key)
 
 
 def get_stats():
@@ -126,14 +129,14 @@ def get_stats():
     # Let's get our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
-            vl = collectd.Values(type=attrs['type'],
+            values = collectd.Values(type=attrs['type'],
                                  plugin=PLUGIN_NAME,
                                  type_instance='%s-%s' % (category, metric))
-            vl.dispatch(values=[field_getter(stats, metric, category)])
+            values.dispatch(values=[field_getter(stats, metric, category)])
 
 
 # Register our functions
-collectd.register_config(config)
+collectd.register_config(configuration)
 collectd.register_init(initialize)
 collectd.register_read(get_stats)
 collectd.register_shutdown(shutdown)
