@@ -7,8 +7,9 @@
 '''
 
 from distutils.version import StrictVersion
-import collectd
-import transmissionrpc
+import collectd  # pylint: disable=import-error
+import transmissionrpc  # pylint: disable=import-error
+
 
 PLUGIN_NAME = 'transmission'
 
