@@ -5,10 +5,6 @@ Introduction
    :target: https://pypi.python.org/pypi/collectd_transmission
    :alt: PyPi version
 
-.. image:: https://travis-ci.org/akosiaris/collectd_transmission.svg?branch=master
-   :target: https://travis-ci.org/akosiaris/collectd_transmission
-   :alt: Build Status
-
 .. image:: https://readthedocs.org/projects/collectd-transmission/badge/?version=latest
    :target: https://readthedocs.org/projects/collectd-transmission/
    :alt: Documentation Status
@@ -73,7 +69,7 @@ Insert the following in your collectd.conf::
 modified accordingly to your needs. Restart collectd and you are done.
 
 There should be rrds for transmission under collectd's data directory.
-Most probably that is /var/lib/collectd/rrd/<hostname>/transmission/
+Most probably that is `/var/lib/collectd/rrd/<hostname>/transmission/`
 
 Documentation
 =============
