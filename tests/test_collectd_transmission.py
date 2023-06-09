@@ -6,7 +6,7 @@ Tests for collectd_transmission
 import sys
 import unittest
 from unittest import mock
-from transmissionrpc.error import TransmissionError
+from transmission_rpc.error import TransmissionError
 
 # Monkey patching the collectd module to facilitate testing
 mock_collectd = mock.MagicMock()
@@ -44,7 +44,7 @@ class MethodTestCase(unittest.TestCase):
 
         collectd_transmission.configuration(self.config)
 
-    @mock.patch('collectd_transmission.transmissionrpc.Client', spec=True)
+    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
     def test_initialize(self, mock_client):
         '''
         Test the initialization
@@ -59,7 +59,7 @@ class MethodTestCase(unittest.TestCase):
             timeout=5)
 
     @mock.patch(
-        'collectd_transmission.transmissionrpc.Client',
+        'collectd_transmission.transmission_rpc.Client',
         spec=True,
         side_effect=TransmissionError)
     def test_initialize_fail(self, mock_client):
@@ -82,7 +82,7 @@ class MethodTestCase(unittest.TestCase):
 
         collectd_transmission.shutdown()
 
-    @mock.patch('collectd_transmission.transmissionrpc.Client', spec=True)
+    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
     def test_get_stats(self, mock_client):
         '''
         Test getting stats
@@ -92,20 +92,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.get_stats()
         mock_client.session_stats.assert_called_with()
 
-    @mock.patch('collectd_transmission.transmissionrpc.Client', spec=True)
-    def test_get_stats_wrong_transmissionrpc_version(self, mock_client):
-        '''
-        Test getting stats with a wrong version of transmission
-        '''
-
-        collectd_transmission.data['client'] = mock_client
-        collectd_transmission.transmissionrpc.__version__ = '0.8'
-        try:
-            collectd_transmission.get_stats()
-        except RuntimeError:
-            pass
-
-    @mock.patch('collectd_transmission.transmissionrpc.Client', spec=True)
+    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
     def test_get_stats_exception(self, mock_client):
         '''
         Test getting stats with an exception
@@ -117,7 +104,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.get_stats()
         mock_client.session_stats.assert_called_with()
 
-    @mock.patch('collectd_transmission.transmissionrpc.Client', spec=True)
+    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
     def test_get_stats_none_client(self, _):
         '''
         Test getting stats if we don't have a client object

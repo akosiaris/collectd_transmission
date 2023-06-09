@@ -6,9 +6,8 @@
 ..  moduleauthor:: Alexandros Kosiaris
 '''
 
-from packaging.version import Version, parse
 import collectd  # pylint: disable=import-error
-import transmissionrpc  # pylint: disable=import-error
+import transmission_rpc  # pylint: disable=import-error
 
 
 PLUGIN_NAME = 'transmission'
@@ -68,12 +67,12 @@ def initialize():
     address = data.get('address', 'http://localhost:9091/transmission/rpc')
     timeout = int(data.get('timeout', '5'))
     try:
-        client = transmissionrpc.Client(
+        client = transmission_rpc.Client(
             address=address,
             user=username,
             password=password,
             timeout=timeout)
-    except transmissionrpc.error.TransmissionError:
+    except transmission_rpc.error.TransmissionError:
         client = None
     data['client'] = client
 
@@ -99,10 +98,6 @@ def field_getter(stats, key, category):
     Returns:
         int. The metric value or 0
     '''
-    # 0.9 and onwards have statistics in a different field
-    client_version = transmissionrpc.__version__
-    if parse(client_version) <= Version('0.9'):
-        raise RuntimeError('transmissionrpc version < 0.9 found, not supported')
     if category == 'cumulative':
         return stats.cumulative_stats[key]
     if category == 'current':
@@ -123,7 +118,7 @@ def get_stats():
     # And let's fetch our data
     try:
         stats = data['client'].session_stats()
-    except transmissionrpc.error.TransmissionError:
+    except transmission_rpc.error.TransmissionError:
         shutdown()
         initialize()
         return  # On this run, just fail to return anything
