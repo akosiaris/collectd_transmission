@@ -44,7 +44,9 @@ class MethodTestCase(unittest.TestCase):
 
         collectd_transmission.configuration(self.config)
 
-    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
+    @mock.patch(
+        'collectd_transmission.transmission_rpc.Client',
+        spec=True)
     def test_initialize(self, mock_client):
         '''
         Test the initialization
@@ -53,8 +55,10 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.configuration(self.config)
         collectd_transmission.initialize()
         mock_client.assert_called_with(
-            address='http://localhost:9091/transmission/rpc',
-            user='myusername',
+            host='localhost',
+            path='/transmission/rpc',
+            port=9091,
+            username='myusername',
             password='mypassword',
             timeout=5)
 
@@ -70,8 +74,10 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.configuration(self.config)
         collectd_transmission.initialize()
         mock_client.assert_called_with(
-            address='http://localhost:9091/transmission/rpc',
-            user='myusername',
+            host='localhost',
+            path='/transmission/rpc',
+            port=9091,
+            username='myusername',
             password='mypassword',
             timeout=5)
 
