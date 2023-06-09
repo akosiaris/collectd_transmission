@@ -14,21 +14,17 @@ If you have not already installed transmision, install it:
 
     apt-get install transmission-daemon
 
-The above install the daemon cause a headless box is assumed. It should
+The above installs the daemon cause a headless box is assumed. It should
 probably work with a non headless box as well and a normal transmission
 installation but this has not been tested.
 
-Install the python transmission binding via either the system packages
+Install the python transmission binding
+
+via pip
 
 .. code-block:: bash
 
-    apt-get install python-transmissionrpc
-
-or plain pip
-
-.. code-block:: bash
-
-    pip install transmissionrpc
+    pip install 'transmission-rpc<3.0'
 
 Install collectd.
 
