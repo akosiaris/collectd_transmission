@@ -74,7 +74,7 @@ Most probably that is `/var/lib/collectd/rrd/<hostname>/transmission/`
 Documentation
 =============
 
-If you want some actually documentation and more detailed installation
+If you want some actual documentation and more detailed installation
 and/or configuration instructions head over to:
 
-https://pythonhosted.org/collectd_transmission/
+https://collectd-transmission.readthedocs.io/en/latest/
