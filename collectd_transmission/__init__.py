@@ -16,28 +16,27 @@ data = {}
 metrics = {
     # General metrics
     'general': {
-        'activeTorrentCount': {'type': 'gauge'},
-        'torrentCount': {'type': 'gauge'},
-        'downloadSpeed': {'type': 'gauge'},
-        'uploadSpeed': {'type': 'gauge'},
-        'pausedTorrentCount': {'type': 'gauge'},
-        'blocklist_size': {'type': 'gauge'},
+        'active_torrent_count': {'type': 'gauge'},
+        'torrent_count': {'type': 'gauge'},
+        'download_speed': {'type': 'gauge'},
+        'upload_speed': {'type': 'gauge'},
+        'paused_torrent_count': {'type': 'gauge'},
     },
     # All time metrics
     'cumulative': {
-        'downloadedBytes': {'type': 'counter'},
-        'filesAdded': {'type': 'counter'},
-        'uploadedBytes': {'type': 'counter'},
-        'secondsActive': {'type': 'gauge'},
-        'sessionCount': {'type': 'gauge'},
+        'uploaded_bytes': {'type': 'counter'},
+        'downloaded_bytes': {'type': 'counter'},
+        'files_added': {'type': 'counter'},
+        'session_count': {'type': 'counter'},
+        'seconds_active': {'type': 'counter'},
     },
     # Per session (restart) metrics
     'current': {
-        'downloadedBytes': {'type': 'counter'},
-        'filesAdded': {'type': 'counter'},
-        'uploadedBytes': {'type': 'counter'},
-        'secondsActive': {'type': 'gauge'},
-        'sessionCount': {'type': 'gauge'},
+        'uploaded_bytes': {'type': 'counter'},
+        'downloaded_bytes': {'type': 'counter'},
+        'files_added': {'type': 'counter'},
+        'session_count': {'type': 'counter'},
+        'seconds_active': {'type': 'counter'},
     }
 }
 
@@ -64,12 +63,16 @@ def initialize():
     '''
     username = data['username']
     password = data['password']
-    address = data.get('address', 'http://localhost:9091/transmission/rpc')
+    host = data.get('host', 'localhost')
+    port = data.get('port', 9091)
+    path = data.get('path', '/transmission/rpc')
     timeout = int(data.get('timeout', '5'))
     try:
         client = transmission_rpc.Client(
-            address=address,
-            user=username,
+            host=host,
+            path=path,
+            port=port,
+            username=username,
             password=password,
             timeout=timeout)
     except transmission_rpc.error.TransmissionError:
@@ -99,9 +102,9 @@ def field_getter(stats, key, category):
         int. The metric value or 0
     '''
     if category == 'cumulative':
-        return stats.cumulative_stats[key]
+        return getattr(stats.cumulative_stats, key)
     if category == 'current':
-        return stats.current_stats[key]
+        return getattr(stats.current_stats, key)
     # We are in "general"
     return getattr(stats, key)
 
