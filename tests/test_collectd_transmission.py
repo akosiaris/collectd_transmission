@@ -119,6 +119,38 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.data['client'] = None
         collectd_transmission.get_stats()
 
+class LiveTestCase(unittest.TestCase):
+    '''
+    Live testing against a running server
+    '''
+
+    def setUp(self):
+        # Mock our configuration to avoid having to construct them properly
+        self.config = mock.Mock()
+        self.config.children = []
+        child1 = mock.Mock()
+        child1.key = 'username'
+        child1.values = ['myusername']
+        child2 = mock.Mock()
+        child2.key = 'password'
+        child2.values = ['mypassword']
+
+        self.config.children.append(child1)
+        self.config.children.append(child2)
+
+    def tearDown(self):
+        del self.config  # The rest will be handled by GC
+
+    def test_proper_client(self):
+        '''
+        Test using a non mocked Client, talking to a running transmission-daemon
+        on port http://localhost:9091/transmission/rpc, with
+        myusername/mypassword auth creds
+        '''
+
+        collectd_transmission.configuration(self.config)
+        collectd_transmission.initialize()
+        collectd_transmission.get_stats()
 
 if __name__ == '__main__':
     unittest.main()
