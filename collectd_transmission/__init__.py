@@ -44,7 +44,7 @@ try:
         }
     }
 except ImportError:
-    # SessionStats import failed, assume we are ransmission-rpc < 4.0.0
+    # SessionStats import failed, assume we are using transmission-rpc < 4.0.0
     metrics= {
         # General metrics
         'general': {
@@ -118,7 +118,7 @@ def initialize():
 
 def shutdown():
     '''
-    Collectd shutdown routive
+    Collectd shutdown routine
     '''
     # Not really any resource to close, just clear the object
     data['client'] = None
@@ -142,7 +142,10 @@ def field_getter(stats, key, category):
     if category == 'current':
         return stats.current_stats.get(key)
     # We are in "general"
-    return getattr(stats, key)
+    try:
+        return stats.get(key)
+    except AttributeError:
+        return getattr(stats, key)
 
 
 def get_stats():
@@ -164,12 +167,12 @@ def get_stats():
     # Let's get our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
-            metric_name = getattr(attrs, 'name', metric)
+            metric_name = attrs.get('name', metric)
             values = collectd.Values(
                 type=attrs['type'],
                 plugin=PLUGIN_NAME,
                 type_instance=f'{category}-{metric_name}')
-            values.dispatch(values=[field_getter(stats, metric, category)])
+            values.dispatch(values=[field_getter(stats, metric_name, category)])
 
 
 # Register our functions
