@@ -45,7 +45,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.configuration(self.config)
 
     @mock.patch(
-        'collectd_transmission.transmission_rpc.Client',
+        'collectd_transmission.Client',
         spec=True)
     def test_initialize(self, mock_client):
         '''
@@ -63,7 +63,7 @@ class MethodTestCase(unittest.TestCase):
             timeout=5)
 
     @mock.patch(
-        'collectd_transmission.transmission_rpc.Client',
+        'collectd_transmission.Client',
         spec=True,
         side_effect=TransmissionError)
     def test_initialize_fail(self, mock_client):
@@ -88,7 +88,7 @@ class MethodTestCase(unittest.TestCase):
 
         collectd_transmission.shutdown()
 
-    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
+    @mock.patch('collectd_transmission.Client', spec=True)
     def test_get_stats(self, mock_client):
         '''
         Test getting stats
@@ -98,7 +98,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.get_stats()
         mock_client.session_stats.assert_called_with()
 
-    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
+    @mock.patch('collectd_transmission.Client', spec=True)
     def test_get_stats_exception(self, mock_client):
         '''
         Test getting stats with an exception
@@ -110,7 +110,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.get_stats()
         mock_client.session_stats.assert_called_with()
 
-    @mock.patch('collectd_transmission.transmission_rpc.Client', spec=True)
+    @mock.patch('collectd_transmission.Client', spec=True)
     def test_get_stats_none_client(self, _):
         '''
         Test getting stats if we don't have a client object
