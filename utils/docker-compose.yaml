@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  transmission:
+    image: caseyfw/transmission
+    container_name: transmission
+    restart: always
+    ports:
+      - 9091:9091
+    environment:
+      UID: '1000'
+      USERNAME: myusername
+      PASSWORD: mypassword

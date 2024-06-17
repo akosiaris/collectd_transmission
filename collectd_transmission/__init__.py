@@ -7,40 +7,75 @@
 '''
 
 import collectd  # pylint: disable=import-error
-import transmission_rpc  # pylint: disable=import-error
-
+from transmission_rpc import Client, Session  # pylint: disable=import-error
+from transmission_rpc.error import TransmissionError  # pylint: disable=import-error
+try:
+    # This will only succeed past version 4.0.0
+    # The name key in the following dicts exists to avoid metric names breaking
+    # when upgrading from transmission-rpc < 4.0.0
+    from transmission_rpc.session import SessionStats
+    metrics= {
+        # General metrics
+        'general': {
+            'active_torrent_count': {'type': 'gauge', 'name': 'activeTorrentCount'},
+            'torrent_count': {'type': 'gauge', 'name': 'torrentCount'},
+            'download_speed': {'type': 'gauge', 'name': 'downloadSpeed'},
+            'upload_speed': {'type': 'gauge', 'name': 'uploadSpeed'},
+            'paused_torrent_count': {'type': 'gauge', 'name': 'pausedTorrentCount'},
+            # The following used to exist, but it is not a property of a
+            # Session instance anymore
+            # 'blocklist_size': {'type': 'gauge', 'name': 'blocklist_size'},
+        },
+        # All time metrics
+        'cumulative': {
+            'downloaded_bytes': {'type': 'counter', 'name': 'downloadedBytes'},
+            'files_added': {'type': 'counter', 'name': 'filesAdded'},
+            'uploaded_bytes': {'type': 'counter', 'name': 'uploadedBytes'},
+            'seconds_active': {'type': 'gauge', 'name': 'secondsActive'},
+            'session_count': {'type': 'gauge', 'name': 'sessionCount'},
+        },
+        # Per session (restart) metrics
+        'current': {
+            'downloaded_bytes': {'type': 'counter', 'name': 'downloadedBytes'},
+            'files_added': {'type': 'counter', 'name': 'filesAdded'},
+            'uploaded_bytes': {'type': 'counter', 'name': 'uploadedBytes'},
+            'seconds_active': {'type': 'gauge', 'name': 'secondsActive'},
+            'session_count': {'type': 'gauge', 'name': 'sessionCount'},
+        }
+    }
+except ImportError:
+    # SessionStats import failed, assume we are ransmission-rpc < 4.0.0
+    metrics= {
+        # General metrics
+        'general': {
+            'activeTorrentCount': {'type': 'gauge'},
+            'torrentCount': {'type': 'gauge'},
+            'downloadSpeed': {'type': 'gauge'},
+            'uploadSpeed': {'type': 'gauge'},
+            'pausedTorrentCount': {'type': 'gauge'},
+            'blocklist_size': {'type': 'gauge'},
+        },
+        # All time metrics
+        'cumulative': {
+            'downloadedBytes': {'type': 'counter'},
+            'filesAdded': {'type': 'counter'},
+            'uploadedBytes': {'type': 'counter'},
+            'secondsActive': {'type': 'gauge'},
+            'sessionCount': {'type': 'gauge'},
+        },
+        # Per session (restart) metrics
+        'current': {
+            'downloadedBytes': {'type': 'counter'},
+            'filesAdded': {'type': 'counter'},
+            'uploadedBytes': {'type': 'counter'},
+            'secondsActive': {'type': 'gauge'},
+            'sessionCount': {'type': 'gauge'},
+        }
+    }
 
 PLUGIN_NAME = 'transmission'
 
 data = {}
-metrics = {
-    # General metrics
-    'general': {
-        'activeTorrentCount': {'type': 'gauge'},
-        'torrentCount': {'type': 'gauge'},
-        'downloadSpeed': {'type': 'gauge'},
-        'uploadSpeed': {'type': 'gauge'},
-        'pausedTorrentCount': {'type': 'gauge'},
-        'blocklist_size': {'type': 'gauge'},
-    },
-    # All time metrics
-    'cumulative': {
-        'downloadedBytes': {'type': 'counter'},
-        'filesAdded': {'type': 'counter'},
-        'uploadedBytes': {'type': 'counter'},
-        'secondsActive': {'type': 'gauge'},
-        'sessionCount': {'type': 'gauge'},
-    },
-    # Per session (restart) metrics
-    'current': {
-        'downloadedBytes': {'type': 'counter'},
-        'filesAdded': {'type': 'counter'},
-        'uploadedBytes': {'type': 'counter'},
-        'secondsActive': {'type': 'gauge'},
-        'sessionCount': {'type': 'gauge'},
-    }
-}
-
 
 def configuration(config):
     '''
@@ -65,18 +100,18 @@ def initialize():
     username = data['username']
     password = data['password']
     host = data.get('host', 'localhost')
-    port = data.get('port', 9091)
+    port = int(data.get('port', '9091'))
     path = data.get('path', '/transmission/rpc')
     timeout = int(data.get('timeout', '5'))
     try:
-        client = transmission_rpc.Client(
+        client = Client(
             host=host,
             path=path,
             port=port,
             username=username,
             password=password,
             timeout=timeout)
-    except transmission_rpc.error.TransmissionError:
+    except TransmissionError:
         client = None
     data['client'] = client
 
@@ -103,9 +138,9 @@ def field_getter(stats, key, category):
         int. The metric value or 0
     '''
     if category == 'cumulative':
-        return stats.cumulative_stats[key]
+        return stats.cumulative_stats.get(key)
     if category == 'current':
-        return stats.current_stats[key]
+        return stats.current_stats.get(key)
     # We are in "general"
     return getattr(stats, key)
 
@@ -122,17 +157,18 @@ def get_stats():
     # And let's fetch our data
     try:
         stats = data['client'].session_stats()
-    except transmission_rpc.error.TransmissionError:
+    except TransmissionError:
         shutdown()
         initialize()
         return  # On this run, just fail to return anything
     # Let's get our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
+            metric_name = getattr(attrs, 'name', metric)
             values = collectd.Values(
                 type=attrs['type'],
                 plugin=PLUGIN_NAME,
-                type_instance=f'{category}-{metric}')
+                type_instance=f'{category}-{metric_name}')
             values.dispatch(values=[field_getter(stats, metric, category)])
 
 
