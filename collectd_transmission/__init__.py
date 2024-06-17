@@ -64,12 +64,16 @@ def initialize():
     '''
     username = data['username']
     password = data['password']
-    address = data.get('address', 'http://localhost:9091/transmission/rpc')
+    host = data.get('host', 'localhost')
+    port = data.get('port', 9091)
+    path = data.get('path', '/transmission/rpc')
     timeout = int(data.get('timeout', '5'))
     try:
         client = transmission_rpc.Client(
-            address=address,
-            user=username,
+            host=host,
+            path=path,
+            port=port,
+            username=username,
             password=password,
             timeout=timeout)
     except transmission_rpc.error.TransmissionError:

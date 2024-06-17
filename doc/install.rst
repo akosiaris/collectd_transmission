@@ -24,7 +24,7 @@ via pip
 
 .. code-block:: bash
 
-    pip install 'transmission-rpc<3.0'
+    pip install 'transmission-rpc>3.0'
 
 Install collectd.
 

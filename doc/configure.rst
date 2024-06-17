@@ -11,12 +11,17 @@ Insert the following in your collectd.conf::
         <Module collectd_transmission>
             username "myuser" # Required
             password "mypass" # Required
-            address "http://localhost:9091/transmission/rpc" # Optional, defaults to "http://localhost:9091/transmission/rpc"
-            timeout "5" # Optional, defaults to 5
+            host "localhost" # Optional
+            port "9091" # Optional
+            path "/transmission/rpc" # Optional
+            timeout "5" # Optional
         </Module>
     </Plugin>
 
-modified accordingly to your needs. Restart collectd and you are done.
+modified accordingly to your needs. Everything marked as optional, can be
+skipped. The default value is given for your convenience
+
+Restart collectd and you are done.
 
 .. code-block:: bash
 
