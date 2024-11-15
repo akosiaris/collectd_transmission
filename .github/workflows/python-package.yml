@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         transmission-rpc-version:
           - "3.0.1"
           - "3.1.0"
@@ -50,7 +50,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: setup transmission
-      run: docker-compose -f utils/docker-compose.yaml up -d
+      run: docker compose -f utils/docker-compose.yaml up -d
 
     - name: Test with pytest
       run: |
