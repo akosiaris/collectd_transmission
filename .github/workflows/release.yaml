@@ -1,6 +1,7 @@
 name: Publish to PyPi
 
 on:
+  workflow_dispatch:
   release:
     types: [published]
 
@@ -9,7 +10,7 @@ jobs:
     name: Upload release to PyPI
     runs-on: ubuntu-latest
     environment:
-      name: testpypi
+      name: pypi
       url: https://pypi.org/project/collectd-transmission/
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
@@ -25,11 +26,5 @@ jobs:
         python -m pip install build
     - name: Build package
       run: python -m build
-
-    #TODO: Enable for PyPi
-    #- name: Publish package distributions to PyPI
-    #uses: pypa/gh-action-pypi-publish@release/v1
-    - name: Publish package distributions to TestPyPI
+    - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
