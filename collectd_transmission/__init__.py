@@ -14,7 +14,7 @@ try:
     # The name key in the following dicts exists to avoid metric names breaking
     # when upgrading from transmission-rpc < 4.0.0
     from transmission_rpc.session import SessionStats
-    metrics= {
+    metrics: dict = {
         # General metrics
         'general': {
             'active_torrent_count': {'type': 'gauge', 'name': 'activeTorrentCount'},
@@ -45,7 +45,7 @@ try:
     }
 except ImportError:
     # SessionStats import failed, assume we are using transmission-rpc < 4.0.0
-    metrics= {
+    metrics: dict = {
         # General metrics
         'general': {
             'activeTorrentCount': {'type': 'gauge'},
@@ -73,11 +73,11 @@ except ImportError:
         }
     }
 
-PLUGIN_NAME = 'transmission'
+PLUGIN_NAME: str = 'transmission'
 
-data = {}
+data: dict = {}
 
-def configuration(config):
+def configuration(config) -> None:
     '''
     Read the configuration and store it at a shared variable
 
@@ -93,16 +93,16 @@ def configuration(config):
         data[child.key] = child.values[0]
 
 
-def initialize():
+def initialize() -> None:
     '''
     Collectd initialization routine
     '''
-    username = data['username']
-    password = data['password']
-    host = data.get('host', 'localhost')
-    port = int(data.get('port', '9091'))
-    path = data.get('path', '/transmission/rpc')
-    timeout = int(data.get('timeout', '5'))
+    username: str = data['username']
+    password: str = data['password']
+    host: str = data.get('host', 'localhost')
+    port: int = int(data.get('port', '9091'))
+    path: str = data.get('path', '/transmission/rpc')
+    timeout: int = int(data.get('timeout', '5'))
     try:
         client = Client(
             host=host,
@@ -116,7 +116,7 @@ def initialize():
     data['client'] = client
 
 
-def shutdown():
+def shutdown() -> None:
     '''
     Collectd shutdown routine
     '''
@@ -124,7 +124,7 @@ def shutdown():
     data['client'] = None
 
 
-def field_getter(stats, key, category):
+def field_getter(stats: dict, key: str, category: str) -> int:
     '''
     Get the statistics associated with a key and category
 
@@ -148,7 +148,7 @@ def field_getter(stats, key, category):
         return getattr(stats, key)
 
 
-def get_stats():
+def get_stats() -> None:
     '''
     Collectd routine to actually get and dispatch the statistics
     '''
@@ -167,7 +167,7 @@ def get_stats():
     # Let's get our data
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
-            metric_name = attrs.get('name', metric)
+            metric_name: str = attrs.get('name', metric)
             values = collectd.Values(
                 type=attrs['type'],
                 plugin=PLUGIN_NAME,
