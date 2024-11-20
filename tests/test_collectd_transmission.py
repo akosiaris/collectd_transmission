@@ -14,13 +14,12 @@ sys.modules['collectd'] = mock_collectd
 import collectd_transmission  # pylint: disable=wrong-import-position
 
 
-
 class MethodTestCase(unittest.TestCase):
     '''
     Testing methods
     '''
 
-    def setUp(self):
+    def setUp(self) -> None:
         # Mock our configuration to enable testing
         self.config = mock.Mock()
         self.config.children = []
@@ -34,10 +33,10 @@ class MethodTestCase(unittest.TestCase):
         self.config.children.append(child1)
         self.config.children.append(child2)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         del self.config  # The rest will be handled by GC
 
-    def test_config(self):
+    def test_config(self) -> None:
         '''
         Test the configuration
         '''
@@ -47,7 +46,7 @@ class MethodTestCase(unittest.TestCase):
     @mock.patch(
         'collectd_transmission.Client',
         spec=True)
-    def test_initialize(self, mock_client):
+    def test_initialize(self, mock_client: mock.MagicMock) -> None:
         '''
         Test the initialization
         '''
@@ -66,7 +65,7 @@ class MethodTestCase(unittest.TestCase):
         'collectd_transmission.Client',
         spec=True,
         side_effect=TransmissionError)
-    def test_initialize_fail(self, mock_client):
+    def test_initialize_fail(self, mock_client: mock.MagicMock) -> None:
         '''
         Test a failed init
         '''
@@ -81,7 +80,7 @@ class MethodTestCase(unittest.TestCase):
             password='mypassword',
             timeout=5)
 
-    def test_shutdown(self):
+    def test_shutdown(self) -> None:
         '''
         Test the shutdown
         '''
@@ -89,7 +88,7 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.shutdown()
 
     @mock.patch('collectd_transmission.Client', spec=True)
-    def test_get_stats(self, mock_client):
+    def test_get_stats(self, mock_client: mock.MagicMock) -> None:
         '''
         Test getting stats
         '''
@@ -99,7 +98,7 @@ class MethodTestCase(unittest.TestCase):
         mock_client.session_stats.assert_called_with()
 
     @mock.patch('collectd_transmission.Client', spec=True)
-    def test_get_stats_exception(self, mock_client):
+    def test_get_stats_exception(self, mock_client: mock.MagicMock) -> None:
         '''
         Test getting stats with an exception
         '''
@@ -111,7 +110,7 @@ class MethodTestCase(unittest.TestCase):
         mock_client.session_stats.assert_called_with()
 
     @mock.patch('collectd_transmission.Client', spec=True)
-    def test_get_stats_none_client(self, _):
+    def test_get_stats_none_client(self, _: mock.MagicMock) -> None:
         '''
         Test getting stats if we don't have a client object
         '''
@@ -119,12 +118,13 @@ class MethodTestCase(unittest.TestCase):
         collectd_transmission.data['client'] = None
         collectd_transmission.get_stats()
 
+
 class LiveTestCase(unittest.TestCase):
     '''
     Live testing against a running server
     '''
 
-    def setUp(self):
+    def setUp(self) -> None:
         # Mock our configuration to avoid having to construct them properly
         self.config = mock.Mock()
         self.config.children = []
@@ -138,12 +138,12 @@ class LiveTestCase(unittest.TestCase):
         self.config.children.append(child1)
         self.config.children.append(child2)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         del self.config  # The rest will be handled by GC
 
-    def test_proper_client(self):
+    def test_proper_client(self) -> None:
         '''
-        Test using a non mocked Client, talking to a running transmission-daemon
+        Test using a non mocked Client, talking to running transmission-daemon
         on port http://localhost:9091/transmission/rpc, with
         myusername/mypassword auth creds
         '''
@@ -151,6 +151,7 @@ class LiveTestCase(unittest.TestCase):
         collectd_transmission.configuration(self.config)
         collectd_transmission.initialize()
         collectd_transmission.get_stats()
+
 
 if __name__ == '__main__':
     unittest.main()

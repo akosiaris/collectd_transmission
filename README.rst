@@ -42,10 +42,10 @@ Debian/Ubuntu assumed. Prereqs installation
 
 .. code-block:: bash
 
-    apt-get install collectd transmission-daemon python-transmissionrpc python-pip
+    apt-get install collectd transmission-daemon python-pip
 
 
-And then the actually software
+And then the actual software
 
 .. code-block:: bash
 
