@@ -6,78 +6,68 @@
 ..  moduleauthor:: Alexandros Kosiaris
 '''
 
-import collectd  # pylint: disable=import-error
-from transmission_rpc import Client, Session  # pylint: disable=import-error
-from transmission_rpc.error import TransmissionError  # pylint: disable=import-error
-try:
-    # This will only succeed past version 4.0.0
-    # The name key in the following dicts exists to avoid metric names breaking
-    # when upgrading from transmission-rpc < 4.0.0
-    from transmission_rpc.session import SessionStats
-    metrics= {
-        # General metrics
-        'general': {
-            'active_torrent_count': {'type': 'gauge', 'name': 'activeTorrentCount'},
-            'torrent_count': {'type': 'gauge', 'name': 'torrentCount'},
-            'download_speed': {'type': 'gauge', 'name': 'downloadSpeed'},
-            'upload_speed': {'type': 'gauge', 'name': 'uploadSpeed'},
-            'paused_torrent_count': {'type': 'gauge', 'name': 'pausedTorrentCount'},
-            # The following used to exist, but it is not a property of a
-            # Session instance anymore
-            # 'blocklist_size': {'type': 'gauge', 'name': 'blocklist_size'},
-        },
-        # All time metrics
-        'cumulative': {
-            'downloaded_bytes': {'type': 'counter', 'name': 'downloadedBytes'},
-            'files_added': {'type': 'counter', 'name': 'filesAdded'},
-            'uploaded_bytes': {'type': 'counter', 'name': 'uploadedBytes'},
-            'seconds_active': {'type': 'gauge', 'name': 'secondsActive'},
-            'session_count': {'type': 'gauge', 'name': 'sessionCount'},
-        },
-        # Per session (restart) metrics
-        'current': {
-            'downloaded_bytes': {'type': 'counter', 'name': 'downloadedBytes'},
-            'files_added': {'type': 'counter', 'name': 'filesAdded'},
-            'uploaded_bytes': {'type': 'counter', 'name': 'uploadedBytes'},
-            'seconds_active': {'type': 'gauge', 'name': 'secondsActive'},
-            'session_count': {'type': 'gauge', 'name': 'sessionCount'},
-        }
+# Remove once we drop python 3.9 support.
+from typing import Optional, Any
+
+import collectd  # type: ignore # pylint: disable=import-error
+from transmission_rpc import Client
+from transmission_rpc.session import SessionStats
+from transmission_rpc.error import TransmissionError
+
+StrDict = dict[str, str]
+DictOfStrDicts = dict[str, StrDict]
+DictOfDictOfStrDicts = dict[str, DictOfStrDicts]
+
+# The name key in the following dicts exists to avoid metric names breaking
+# when upgrading from transmission-rpc < 4.0.0
+metrics: DictOfDictOfStrDicts = {
+    # General metrics
+    'general': {
+        'active_torrent_count': {'type': 'gauge',
+                                 'name': 'activeTorrentCount'},
+        'torrent_count': {'type': 'gauge',
+                          'name': 'torrentCount'},
+        'download_speed': {'type': 'gauge',
+                           'name': 'downloadSpeed'},
+        'upload_speed': {'type': 'gauge',
+                         'name': 'uploadSpeed'},
+        'paused_torrent_count': {'type': 'gauge',
+                                 'name': 'pausedTorrentCount'},
+        # The following used to exist, but it is not a property of a
+        # Session instance anymore
+        # 'blocklist_size': {'type': 'gauge', 'name': 'blocklist_size'},
+    },
+    # All time metrics
+    'cumulative': {'downloaded_bytes': {'type': 'counter',
+                                        'name': 'downloadedBytes'},
+                   'files_added': {'type': 'counter',
+                                   'name': 'filesAdded'},
+                   'uploaded_bytes': {'type': 'counter',
+                                      'name': 'uploadedBytes'},
+                   'seconds_active': {'type': 'gauge',
+                                      'name': 'secondsActive'},
+                   'session_count': {'type': 'gauge',
+                                     'name': 'sessionCount'}, },
+    # Per session (restart) metrics
+    'current': {
+        'downloaded_bytes': {'type': 'counter',
+                             'name': 'downloadedBytes'},
+        'files_added': {'type': 'counter',
+                        'name': 'filesAdded'},
+        'uploaded_bytes': {'type': 'counter',
+                           'name': 'uploadedBytes'},
+        'seconds_active': {'type': 'gauge',
+                           'name': 'secondsActive'},
+        'session_count': {'type': 'gauge',
+                          'name': 'sessionCount'},
     }
-except ImportError:
-    # SessionStats import failed, assume we are using transmission-rpc < 4.0.0
-    metrics= {
-        # General metrics
-        'general': {
-            'activeTorrentCount': {'type': 'gauge'},
-            'torrentCount': {'type': 'gauge'},
-            'downloadSpeed': {'type': 'gauge'},
-            'uploadSpeed': {'type': 'gauge'},
-            'pausedTorrentCount': {'type': 'gauge'},
-            'blocklist_size': {'type': 'gauge'},
-        },
-        # All time metrics
-        'cumulative': {
-            'downloadedBytes': {'type': 'counter'},
-            'filesAdded': {'type': 'counter'},
-            'uploadedBytes': {'type': 'counter'},
-            'secondsActive': {'type': 'gauge'},
-            'sessionCount': {'type': 'gauge'},
-        },
-        # Per session (restart) metrics
-        'current': {
-            'downloadedBytes': {'type': 'counter'},
-            'filesAdded': {'type': 'counter'},
-            'uploadedBytes': {'type': 'counter'},
-            'secondsActive': {'type': 'gauge'},
-            'sessionCount': {'type': 'gauge'},
-        }
-    }
+}
 
-PLUGIN_NAME = 'transmission'
+PLUGIN_NAME: str = 'transmission'
+data: dict[str, Any] = {}
 
-data = {}
 
-def configuration(config):
+def configuration(config: Any) -> None:
     '''
     Read the configuration and store it at a shared variable
 
@@ -93,18 +83,18 @@ def configuration(config):
         data[child.key] = child.values[0]
 
 
-def initialize():
+def initialize() -> None:
     '''
     Collectd initialization routine
     '''
-    username = data['username']
-    password = data['password']
-    host = data.get('host', 'localhost')
-    port = int(data.get('port', '9091'))
-    path = data.get('path', '/transmission/rpc')
-    timeout = int(data.get('timeout', '5'))
+    username: str = data['username']
+    password: str = data['password']
+    host: str = data.get('host', 'localhost')
+    port: int = int(data.get('port', '9091'))
+    path: str = data.get('path', '/transmission/rpc')
+    timeout: int = int(data.get('timeout', '5'))
     try:
-        client = Client(
+        client: Optional[Client] = Client(
             host=host,
             path=path,
             port=port,
@@ -116,7 +106,7 @@ def initialize():
     data['client'] = client
 
 
-def shutdown():
+def shutdown() -> None:
     '''
     Collectd shutdown routine
     '''
@@ -124,7 +114,7 @@ def shutdown():
     data['client'] = None
 
 
-def field_getter(stats, key, category):
+def field_getter(stats: SessionStats, key: str, category: str) -> Any:
     '''
     Get the statistics associated with a key and category
 
@@ -148,7 +138,7 @@ def field_getter(stats, key, category):
         return getattr(stats, key)
 
 
-def get_stats():
+def get_stats() -> None:
     '''
     Collectd routine to actually get and dispatch the statistics
     '''
@@ -159,20 +149,25 @@ def get_stats():
         initialize()
     # And let's fetch our data
     try:
-        stats = data['client'].session_stats()
+        stats: SessionStats = data['client'].session_stats()
     except TransmissionError:
         shutdown()
         initialize()
         return  # On this run, just fail to return anything
     # Let's get our data
+    category: str
+    catmetrics: DictOfStrDicts
+    metric: str
+    attrs: StrDict
     for category, catmetrics in metrics.items():
         for metric, attrs in catmetrics.items():
-            metric_name = attrs.get('name', metric)
+            metric_name: str = attrs.get('name', metric)
             values = collectd.Values(
                 type=attrs['type'],
                 plugin=PLUGIN_NAME,
                 type_instance=f'{category}-{metric_name}')
-            values.dispatch(values=[field_getter(stats, metric_name, category)])
+            values.dispatch(
+                    values=[field_getter(stats, metric_name, category)])
 
 
 # Register our functions
