@@ -53,4 +53,4 @@ jobs:
 
     - name: check types with mypy
       run: |
-        python -m mypy collectd_transmission
+        python -m mypy --strict collectd_transmission
